@@ -13,7 +13,7 @@
 
 ## Progress
 
-**3 of 15 chapters complete**
+**4 of 15 chapters complete**
 
 ---
 
@@ -39,7 +39,7 @@
 
 | # | Chapter | File | Status | Key Skills |
 |---|---------|------|--------|-----------|
-| 04 | MCP Tools — The Primary Primitive | chapters/chapter-04-tools.md | 🔜 | Tool schema design, annotations, return types, security, versioning |
+| 04 | [MCP Tools — The Primary Primitive](chapters/chapter-04-tools.md) | chapters/chapter-04-tools.md | ✅ Complete | Tool schema design, annotations, return types, security, versioning |
 | 05 | MCP Resources and Prompts | chapters/chapter-05-resources-prompts.md | 🔜 | URI schemes, resource templates, subscriptions, prompt arguments |
 | 06 | Advanced Protocol Features | chapters/chapter-06-advanced-protocol.md | 🔜 | Sampling, Roots, Elicitation, progress tracking, cancellation, logging |
 
@@ -162,7 +162,7 @@ Takes approximately 2–3 weeks part-time.
 | stdio transport | Ch 07 | 🔜 |
 | Streamable HTTP transport | Ch 07 | 🔜 |
 | Legacy SSE (deprecated) | Ch 07 | 🔜 |
-| Tools primitive | Ch 04 | 🔜 |
+| Tools primitive | Ch 04 | ✅ |
 | Resources primitive | Ch 05 | 🔜 |
 | Prompts primitive | Ch 05 | 🔜 |
 | Sampling (client feature, deprecated in 2026-07 RC) | Ch 06 | 🔜 |
@@ -171,7 +171,7 @@ Takes approximately 2–3 weeks part-time.
 | Progress notifications | Ch 06 | 🔜 |
 | Cancellation | Ch 06 | 🔜 |
 | Logging | Ch 06 | 🔜 |
-| Tool annotations | Ch 04 | 🔜 |
+| Tool annotations | Ch 04 | ✅ |
 | Resource subscriptions | Ch 05 | 🔜 |
 | Resource templates | Ch 05 | 🔜 |
 | Embedded resources | Ch 05 | 🔜 |
@@ -184,4 +184,4 @@ Takes approximately 2–3 weeks part-time.
 
 ---
 
-*Last updated: 2026-06-30 — 3 of 15 chapters complete*
+*Last updated: 2026-06-30 — 4 of 15 chapters complete*
