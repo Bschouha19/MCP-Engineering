@@ -1345,20 +1345,24 @@ const server = new McpServer({ name: "developer-notes-ts", version: "1.0.0" });
 
 
 // ── Basic tool — text result ──────────────────────────────────────────────────
+// server.registerTool(name, { description, inputSchema, annotations? }, handler)
+// description and inputSchema are INSIDE one config object — not separate arguments.
 
-server.tool(
+server.registerTool(
   "list_notes",
-  // Description: three sentences — what, when, returns
-  "List all saved developer notes, optionally filtered by tag. " +
-  "Use this before add_note to check for similar existing notes. " +
-  "Returns one note per line with ID and tag list, or 'No notes' if empty.",
   {
-    tag: z.string().optional().describe(
-      "If provided, only return notes with this exact tag. Case-sensitive."
-    ),
-    limit: z.number().int().min(1).max(100).default(20).describe(
-      "Max notes to return (1–100). Default 20."
-    ),
+    description:
+      "List all saved developer notes, optionally filtered by tag. " +
+      "Use this before add_note to check for similar existing notes. " +
+      "Returns one note per line with ID and tag list, or 'No notes' if empty.",
+    inputSchema: z.object({
+      tag: z.string().optional().describe(
+        "If provided, only return notes with this exact tag. Case-sensitive."
+      ),
+      limit: z.number().int().min(1).max(100).default(20).describe(
+        "Max notes to return (1–100). Default 20."
+      ),
+    }),
   },
   async ({ tag, limit }) => {
     const allNotes = Object.values(notes);
@@ -1378,15 +1382,18 @@ server.tool(
 
 // ── Enum (Literal equivalent) ─────────────────────────────────────────────────
 
-server.tool(
+server.registerTool(
   "export_notes",
-  "Export all notes in the requested format. " +
-  "Use 'markdown' for human reading, 'json' for programmatic use, 'csv' for spreadsheets. " +
-  "Returns the full export as a string in the chosen format.",
   {
-    format: z.enum(["markdown", "json", "csv"]).default("markdown").describe(
-      "Output format: 'markdown', 'json', or 'csv'."
-    ),
+    description:
+      "Export all notes in the requested format. " +
+      "Use 'markdown' for human reading, 'json' for programmatic use, 'csv' for spreadsheets. " +
+      "Returns the full export as a string in the chosen format.",
+    inputSchema: z.object({
+      format: z.enum(["markdown", "json", "csv"]).default("markdown").describe(
+        "Output format: 'markdown', 'json', or 'csv'."
+      ),
+    }),
   },
   async ({ format }) => {
     const allNotes = Object.values(notes);
@@ -1407,20 +1414,26 @@ server.tool(
 
 
 // ── Tool with annotations ─────────────────────────────────────────────────────
+// Annotations go INSIDE the config object under the 'annotations' key.
+// They are NOT a separate positional argument.
 
-server.tool(
+server.registerTool(
   "delete_note",
-  "Delete a developer note permanently. This cannot be undone. " +
-  "Use only when the user explicitly requests deletion. " +
-  "Returns a confirmation message with the deleted note ID.",
-  { note_id: z.string().describe("The 8-character note ID to delete.") },
-  // Annotations — 4th argument when provided before the handler
   {
-    title: "Delete Note",
-    readOnlyHint: false,
-    destructiveHint: true,   // Irreversible — client should confirm with user
-    idempotentHint: true,    // Deleting a deleted note = same final state
-    openWorldHint: false,    // Only touches internal storage
+    description:
+      "Delete a developer note permanently. This cannot be undone. " +
+      "Use only when the user explicitly requests deletion. " +
+      "Returns a confirmation message with the deleted note ID.",
+    inputSchema: z.object({
+      note_id: z.string().describe("The 8-character note ID to delete."),
+    }),
+    annotations: {
+      title: "Delete Note",
+      readOnlyHint: false,
+      destructiveHint: true,   // Irreversible — client should confirm with user
+      idempotentHint: true,    // Deleting a deleted note = same final state
+      openWorldHint: false,    // Only touches internal storage
+    },
   },
   async ({ note_id }) => {
     if (!(note_id in notes)) {
@@ -1438,13 +1451,16 @@ server.tool(
 
 // ── Image content ─────────────────────────────────────────────────────────────
 
-server.tool(
+server.registerTool(
   "get_note_count_chart",
-  "Generate a simple bar chart image showing note count by tag. " +
-  "Use when the user wants a visual overview of their note distribution. " +
-  "Returns a PNG image.",
-  {},
-  { readOnlyHint: true, idempotentHint: false },
+  {
+    description:
+      "Generate a simple bar chart image showing note count by tag. " +
+      "Use when the user wants a visual overview of their note distribution. " +
+      "Returns a PNG image.",
+    inputSchema: z.object({}),
+    annotations: { readOnlyHint: true, idempotentHint: false },
+  },
   async () => {
     // In production: use canvas or a charting library to generate PNG
     // Here: placeholder base64 PNG (1x1 white pixel for demonstration)
@@ -1462,15 +1478,18 @@ server.tool(
 );
 
 
-// ── Structured content (outputSchema via object return) ───────────────────────
+// ── Structured content (outputSchema) ────────────────────────────────────────
 
-server.tool(
+server.registerTool(
   "get_session_stats",
-  "Get statistics for the current note collection: counts, tag usage, averages. " +
-  "Use for a quick overview without listing all notes. " +
-  "Returns JSON with total_notes, total_tags, unique_tags, most_used_tag.",
-  {},
-  { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  {
+    description:
+      "Get statistics for the current note collection: counts, tag usage, averages. " +
+      "Use for a quick overview without listing all notes. " +
+      "Returns JSON with total_notes, total_tags, unique_tags, most_used_tag.",
+    inputSchema: z.object({}),
+    annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  },
   async () => {
     const allNotes = Object.values(notes);
     const tagCounts: Record<string, number> = {};
@@ -1542,7 +1561,19 @@ return {
 };
 ```
 
-**Annotation argument position:** In the TypeScript SDK, annotations are the 4th argument to `server.tool()` — between the schema object and the handler function. If you omit annotations, the handler is the 4th argument.
+**`registerTool()` argument structure:** The TypeScript SDK uses three arguments — name, a config object, and the handler. The config object contains `description`, `inputSchema`, and optionally `annotations`. Everything goes inside that one object; there are no extra positional arguments for description, schema, or annotations separately.
+
+```typescript
+server.registerTool(
+  "tool-name",                         // 1st: tool name
+  {                                    // 2nd: config object
+    description: "...",
+    inputSchema: z.object({ ... }),
+    annotations: { destructiveHint: true },  // optional, inside config
+  },
+  async (args) => { ... }              // 3rd: handler
+);
+```
 
 ---
 
