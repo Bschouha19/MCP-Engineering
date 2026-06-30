@@ -306,8 +306,8 @@ Volume 1 repository: https://github.com/Bschouha19/AI-Engineering-Handbook
 | # | Chapter | File | Status |
 |---|---------|------|--------|
 | 01 | What Is MCP and Why It Exists | chapters/chapter-01-what-is-mcp.md | ✅ Complete |
-| 02 | MCP Protocol Architecture — How It Actually Works | chapters/chapter-02-protocol-architecture.md | 🔜 Next |
-| 03 | Your First MCP Server | chapters/chapter-03-first-server.md | 🔜 |
+| 02 | MCP Protocol Architecture — How It Actually Works | chapters/chapter-02-protocol-architecture.md | ✅ Complete |
+| 03 | Your First MCP Server | chapters/chapter-03-first-server.md | 🔜 Next |
 | 04 | MCP Tools — The Primary Primitive | chapters/chapter-04-tools.md | 🔜 |
 | 05 | MCP Resources and Prompts | chapters/chapter-05-resources-prompts.md | 🔜 |
 | 06 | Advanced Protocol Features | chapters/chapter-06-advanced-protocol.md | 🔜 |

@@ -13,7 +13,7 @@
 
 ## Progress
 
-**1 of 15 chapters complete**
+**2 of 15 chapters complete**
 
 ---
 
@@ -25,7 +25,7 @@
 | # | Chapter | File | Status | Key Skills |
 |---|---------|------|--------|-----------|
 | 01 | [What Is MCP and Why It Exists](chapters/chapter-01-what-is-mcp.md) | chapters/chapter-01-what-is-mcp.md | ✅ Complete | N×M problem, JSON-RPC 2.0, three-actor model, ecosystem map |
-| 02 | MCP Protocol Architecture — How It Actually Works | chapters/chapter-02-protocol-architecture.md | 🔜 | Capability negotiation, message lifecycle, error codes, spec versions |
+| 02 | [MCP Protocol Architecture — How It Actually Works](chapters/chapter-02-protocol-architecture.md) | chapters/chapter-02-protocol-architecture.md | ✅ Complete | Capability negotiation, message lifecycle, error codes, spec versions |
 | 03 | Your First MCP Server | chapters/chapter-03-first-server.md | 🔜 | FastMCP, raw SDK, wiring to Claude Code + Cursor + Claude Desktop |
 
 **Module 1 Learning Goal:** Understand what MCP is, why the protocol is designed the way it is, and have a working server connected to real clients before moving to Module 2.
@@ -184,4 +184,4 @@ Takes approximately 2–3 weeks part-time.
 
 ---
 
-*Last updated: 2026-06-30 — 0 of 15 chapters complete*
+*Last updated: 2026-06-30 — 2 of 15 chapters complete*

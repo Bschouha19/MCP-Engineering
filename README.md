@@ -51,7 +51,7 @@ This handbook teaches you to build on both sides of that protocol — the server
 
 ## Progress
 
-**1 of 15 chapters complete** — Volume 2 in progress.
+**2 of 15 chapters complete** — Volume 2 in progress.
 
 | Module | Chapters | Status |
 |--------|----------|--------|
@@ -71,7 +71,7 @@ This handbook teaches you to build on both sides of that protocol — the server
 | # | Chapter | Status |
 |---|---------|--------|
 | 01 | [What Is MCP and Why It Exists](./chapters/chapter-01-what-is-mcp.md) | ✅ Complete |
-| 02 | MCP Protocol Architecture — How It Actually Works | 🔜 |
+| 02 | [MCP Protocol Architecture — How It Actually Works](./chapters/chapter-02-protocol-architecture.md) | ✅ Complete |
 | 03 | Your First MCP Server | 🔜 |
 
 ### Module 2 — The Three Primitives
