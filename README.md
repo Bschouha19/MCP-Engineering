@@ -51,7 +51,7 @@ This handbook teaches you to build on both sides of that protocol — the server
 
 ## Progress
 
-**4 of 15 chapters complete** — Volume 2 in progress.
+**5 of 15 chapters complete** — Volume 2 in progress.
 
 | Module | Chapters | Status |
 |--------|----------|--------|
@@ -79,7 +79,7 @@ This handbook teaches you to build on both sides of that protocol — the server
 | # | Chapter | Status |
 |---|---------|--------|
 | 04 | [MCP Tools — The Primary Primitive](./chapters/chapter-04-tools.md) | ✅ Complete |
-| 05 | MCP Resources and Prompts | 🔜 |
+| 05 | [MCP Resources and Prompts](./chapters/chapter-05-resources-prompts.md) | ✅ Complete |
 | 06 | Advanced Protocol Features | 🔜 |
 
 ### Module 3 — Transport and Connectivity

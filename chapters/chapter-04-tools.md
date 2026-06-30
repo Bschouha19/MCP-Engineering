@@ -1309,6 +1309,243 @@ def search_notes(query: str, tag: str | None = None, created_after: str | None =
 
 ---
 
+## TypeScript SDK — Tool Implementation
+
+The TypeScript SDK uses Zod schemas instead of Python type hints. The design principles are identical — good descriptions, constrained parameters, appropriate annotations — but the syntax is different.
+
+### Schema Design with Zod
+
+```typescript
+// tools_typescript.ts — Learning example
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
+
+const notes: Record<string, { id: string; content: string; tags: string[]; created_at: string }> = {};
+
+const server = new McpServer({ name: "developer-notes-ts", version: "1.0.0" });
+
+
+// ── Zod equivalents of Python type hint patterns ──────────────────────────────
+
+// Python: query: str
+//     Zod: z.string()
+
+// Python: limit: Annotated[int, Field(ge=1, le=100)] = 20
+//     Zod: z.number().int().min(1).max(100).default(20)
+
+// Python: format: Literal["markdown", "json", "csv"] = "markdown"
+//     Zod: z.enum(["markdown", "json", "csv"]).default("markdown")
+
+// Python: tag: str | None = None
+//     Zod: z.string().optional()
+
+// Python: tags: list[str] = []
+//     Zod: z.array(z.string()).default([])
+
+
+// ── Basic tool — text result ──────────────────────────────────────────────────
+
+server.tool(
+  "list_notes",
+  // Description: three sentences — what, when, returns
+  "List all saved developer notes, optionally filtered by tag. " +
+  "Use this before add_note to check for similar existing notes. " +
+  "Returns one note per line with ID and tag list, or 'No notes' if empty.",
+  {
+    tag: z.string().optional().describe(
+      "If provided, only return notes with this exact tag. Case-sensitive."
+    ),
+    limit: z.number().int().min(1).max(100).default(20).describe(
+      "Max notes to return (1–100). Default 20."
+    ),
+  },
+  async ({ tag, limit }) => {
+    const allNotes = Object.values(notes);
+    const filtered = tag
+      ? allNotes.filter(n => n.tags.includes(tag))
+      : allNotes;
+
+    const page = filtered.slice(0, limit);
+    if (page.length === 0) {
+      return { content: [{ type: "text" as const, text: "No notes found." }] };
+    }
+    const lines = page.map(n => `[${n.id}] [${n.tags.join(", ")}] ${n.content.slice(0, 80)}`);
+    return { content: [{ type: "text" as const, text: lines.join("\n") }] };
+  }
+);
+
+
+// ── Enum (Literal equivalent) ─────────────────────────────────────────────────
+
+server.tool(
+  "export_notes",
+  "Export all notes in the requested format. " +
+  "Use 'markdown' for human reading, 'json' for programmatic use, 'csv' for spreadsheets. " +
+  "Returns the full export as a string in the chosen format.",
+  {
+    format: z.enum(["markdown", "json", "csv"]).default("markdown").describe(
+      "Output format: 'markdown', 'json', or 'csv'."
+    ),
+  },
+  async ({ format }) => {
+    const allNotes = Object.values(notes);
+    let output: string;
+
+    if (format === "json") {
+      output = JSON.stringify(allNotes, null, 2);
+    } else if (format === "csv") {
+      output = "id,content,tags,created_at\n" +
+        allNotes.map(n => `${n.id},"${n.content}","${n.tags.join("|")}",${n.created_at}`).join("\n");
+    } else {
+      output = allNotes.map(n => `## [${n.id}]\n${n.content}\n*Tags: ${n.tags.join(", ")}*`).join("\n\n");
+    }
+
+    return { content: [{ type: "text" as const, text: output || "No notes to export." }] };
+  }
+);
+
+
+// ── Tool with annotations ─────────────────────────────────────────────────────
+
+server.tool(
+  "delete_note",
+  "Delete a developer note permanently. This cannot be undone. " +
+  "Use only when the user explicitly requests deletion. " +
+  "Returns a confirmation message with the deleted note ID.",
+  { note_id: z.string().describe("The 8-character note ID to delete.") },
+  // Annotations — 4th argument when provided before the handler
+  {
+    title: "Delete Note",
+    readOnlyHint: false,
+    destructiveHint: true,   // Irreversible — client should confirm with user
+    idempotentHint: true,    // Deleting a deleted note = same final state
+    openWorldHint: false,    // Only touches internal storage
+  },
+  async ({ note_id }) => {
+    if (!(note_id in notes)) {
+      // isError: true — recoverable error the AI can respond to
+      return {
+        content: [{ type: "text" as const, text: `Note '${note_id}' not found. Use list_notes to find valid IDs.` }],
+        isError: true,
+      };
+    }
+    delete notes[note_id];
+    return { content: [{ type: "text" as const, text: `Deleted note ${note_id}.` }] };
+  }
+);
+
+
+// ── Image content ─────────────────────────────────────────────────────────────
+
+server.tool(
+  "get_note_count_chart",
+  "Generate a simple bar chart image showing note count by tag. " +
+  "Use when the user wants a visual overview of their note distribution. " +
+  "Returns a PNG image.",
+  {},
+  { readOnlyHint: true, idempotentHint: false },
+  async () => {
+    // In production: use canvas or a charting library to generate PNG
+    // Here: placeholder base64 PNG (1x1 white pixel for demonstration)
+    const PLACEHOLDER_PNG_B64 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
+
+    return {
+      content: [{
+        type: "image" as const,
+        data: PLACEHOLDER_PNG_B64,
+        mimeType: "image/png",
+      }],
+    };
+  }
+);
+
+
+// ── Structured content (outputSchema via object return) ───────────────────────
+
+server.tool(
+  "get_session_stats",
+  "Get statistics for the current note collection: counts, tag usage, averages. " +
+  "Use for a quick overview without listing all notes. " +
+  "Returns JSON with total_notes, total_tags, unique_tags, most_used_tag.",
+  {},
+  { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  async () => {
+    const allNotes = Object.values(notes);
+    const tagCounts: Record<string, number> = {};
+    for (const note of allNotes) {
+      for (const tag of note.tags) {
+        tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
+      }
+    }
+    const mostUsed = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a])[0] ?? null;
+
+    const stats = {
+      total_notes: allNotes.length,
+      total_tags: Object.values(tagCounts).reduce((s, n) => s + n, 0),
+      unique_tags: Object.keys(tagCounts).sort(),
+      most_used_tag: mostUsed,
+    };
+
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(stats, null, 2) }],
+      structuredContent: stats,  // Clients that support outputSchema consume this
+    };
+  }
+);
+
+async function main() {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+}
+
+main();
+```
+
+**Key Zod patterns at a glance:**
+
+| Python | Zod equivalent |
+|--------|---------------|
+| `str` | `z.string()` |
+| `int` | `z.number().int()` |
+| `float` | `z.number()` |
+| `bool` | `z.boolean()` |
+| `list[str]` | `z.array(z.string())` |
+| `str \| None = None` | `z.string().optional()` |
+| `Literal["a", "b"]` | `z.enum(["a", "b"])` |
+| `Annotated[int, Field(ge=1, le=100)]` | `z.number().int().min(1).max(100)` |
+| `Annotated[str, Field(description="...")]` | `z.string().describe("...")` |
+| `= "default"` | `.default("default")` |
+
+**Tool handler return format:**
+
+```typescript
+// Standard result
+return { content: [{ type: "text", text: "..." }] };
+
+// Error result (isError: true — recoverable)
+return { content: [{ type: "text", text: "Not found..." }], isError: true };
+
+// Multiple content items
+return {
+  content: [
+    { type: "text" as const, text: "Summary text" },
+    { type: "image" as const, data: "base64...", mimeType: "image/png" },
+  ],
+};
+
+// With structured content
+return {
+  content: [{ type: "text" as const, text: JSON.stringify(data) }],
+  structuredContent: data,
+};
+```
+
+**Annotation argument position:** In the TypeScript SDK, annotations are the 4th argument to `server.tool()` — between the schema object and the handler function. If you omit annotations, the handler is the 4th argument.
+
+---
+
 ## Production Architecture
 
 In production, tools are the interface between the AI and your business logic. The architectural principles:

@@ -13,7 +13,7 @@
 
 ## Progress
 
-**4 of 15 chapters complete**
+**5 of 15 chapters complete**
 
 ---
 
@@ -40,7 +40,7 @@
 | # | Chapter | File | Status | Key Skills |
 |---|---------|------|--------|-----------|
 | 04 | [MCP Tools — The Primary Primitive](chapters/chapter-04-tools.md) | chapters/chapter-04-tools.md | ✅ Complete | Tool schema design, annotations, return types, security, versioning |
-| 05 | MCP Resources and Prompts | chapters/chapter-05-resources-prompts.md | 🔜 | URI schemes, resource templates, subscriptions, prompt arguments |
+| 05 | [MCP Resources and Prompts](chapters/chapter-05-resources-prompts.md) | chapters/chapter-05-resources-prompts.md | ✅ Complete | URI schemes, resource templates, subscriptions, prompt arguments |
 | 06 | Advanced Protocol Features | chapters/chapter-06-advanced-protocol.md | 🔜 | Sampling, Roots, Elicitation, progress tracking, cancellation, logging |
 
 **Module 2 Learning Goal:** Know when to use a tool vs a resource vs a prompt, design tool schemas that LLMs interpret correctly, and use all protocol-level utilities.
@@ -163,8 +163,8 @@ Takes approximately 2–3 weeks part-time.
 | Streamable HTTP transport | Ch 07 | 🔜 |
 | Legacy SSE (deprecated) | Ch 07 | 🔜 |
 | Tools primitive | Ch 04 | ✅ |
-| Resources primitive | Ch 05 | 🔜 |
-| Prompts primitive | Ch 05 | 🔜 |
+| Resources primitive | Ch 05 | ✅ |
+| Prompts primitive | Ch 05 | ✅ |
 | Sampling (client feature, deprecated in 2026-07 RC) | Ch 06 | 🔜 |
 | Roots (client feature, deprecated in 2026-07 RC) | Ch 06 | 🔜 |
 | Elicitation (client feature) | Ch 06 | 🔜 |
@@ -172,9 +172,9 @@ Takes approximately 2–3 weeks part-time.
 | Cancellation | Ch 06 | 🔜 |
 | Logging | Ch 06 | 🔜 |
 | Tool annotations | Ch 04 | ✅ |
-| Resource subscriptions | Ch 05 | 🔜 |
-| Resource templates | Ch 05 | 🔜 |
-| Embedded resources | Ch 05 | 🔜 |
+| Resource subscriptions | Ch 05 | ✅ |
+| Resource templates | Ch 05 | ✅ |
+| Embedded resources | Ch 05 | ✅ |
 | OAuth 2.1 + PKCE | Ch 12 | 🔜 |
 | Dynamic client registration | Ch 12 | 🔜 |
 | .well-known/mcp.json | Ch 14 | 🔜 |
@@ -184,4 +184,4 @@ Takes approximately 2–3 weeks part-time.
 
 ---
 
-*Last updated: 2026-06-30 — 4 of 15 chapters complete*
+*Last updated: 2026-06-30 — 5 of 15 chapters complete*
