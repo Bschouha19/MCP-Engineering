@@ -65,6 +65,28 @@ A chapter is NOT complete until it contains ALL required sections and appropriat
 - [ ] Estimated Reading Time
 - [ ] Estimated Hands-on Time
 
+#### Required Fast Read (every chapter — immediately after front matter):
+- [ ] **⚡ Fast Read** box: 5-minute overview for readers who want to skim or who already know part of this content
+  - What it is (1 sentence)
+  - Why it matters (1 sentence)
+  - The key insight (1–2 sentences that would take a beginner by surprise)
+  - What you build in this chapter (1 sentence)
+  - Jump-to links: [Core Concepts], [Beginner Implementation], [Best Practices], [Mini Project]
+  - Estimated skim time: "5 minutes"
+
+Format:
+```markdown
+## ⚡ Fast Read
+
+> **Skim time: 5 minutes** — Read this if you're in a hurry, returning for reference, or already familiar with part of this topic.
+
+- **What it is:** [One sentence.]
+- **Why it matters:** [One sentence.]
+- **Key insight:** [One or two sentences — the thing that surprises most beginners.]
+- **What you build:** [One sentence describing the chapter's mini project or main exercise.]
+- **Jump to:** [Core Concepts](#core-concepts) | [First Code](#beginner-implementation) | [Best Practices](#best-practices) | [Mini Project](#mini-project)
+```
+
 #### Required Body (every chapter, in this order):
 1. **Why This Topic Exists** — the engineering problem this chapter solves
 2. **Real-World Analogy** — at least one analogy a software developer would find immediately familiar
@@ -308,8 +330,27 @@ MCP-Engineering/
 ├── CLAUDE.md               ← This file. Source of truth for authoring workflow.
 ├── COURSE_INDEX.md         ← Public-facing course overview and progress tracker
 ├── ROADMAP.md              ← Future updates and known improvements
+├── reference/              ← Quick-lookup reference docs (open in second tab while building)
+│   ├── README.md               ← Index of all reference docs
+│   ├── 01-json-rpc-cheat-sheet.md
+│   ├── 02-mcp-spec-cheat-sheet.md
+│   ├── 03-transport-comparison.md
+│   ├── 04-error-codes.md
+│   ├── 05-oauth-flow.md
+│   ├── 06-fastmcp-api.md
+│   ├── 07-python-sdk-api.md
+│   ├── 08-typescript-sdk-api.md
+│   ├── 09-security-checklist.md
+│   └── 10-deployment-checklist.md
 └── chapters/
     ├── chapter-01-what-is-mcp.md
     ├── chapter-02-protocol-architecture.md
     └── ...
 ```
+
+### Reference docs — maintenance notes
+
+- Reference docs are **not** chapters — they don't need all 25 sections
+- Update reference docs when a chapter reveals a correction or new detail
+- Each reference doc has a "Verified: DATE" footer — update it when corrected
+- When a spec version changes, update affected reference docs in the same commit as the chapter that covers the change

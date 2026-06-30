@@ -156,6 +156,25 @@ Every chapter includes all of the following:
 
 ---
 
+## Reference Materials
+
+Every reference document is open-in-second-tab material — built for lookup, not for learning from scratch.
+
+| Document | Use it when... |
+|----------|---------------|
+| [JSON-RPC Cheat Sheet](./reference/01-json-rpc-cheat-sheet.md) | Debugging message format |
+| [MCP Spec Cheat Sheet](./reference/02-mcp-spec-cheat-sheet.md) | Looking up method names, capabilities, lifecycle |
+| [Transport Comparison](./reference/03-transport-comparison.md) | Choosing or debugging stdio vs Streamable HTTP |
+| [Error Codes](./reference/04-error-codes.md) | Got an error code and need to know what it means |
+| [OAuth 2.1 + PKCE Flow](./reference/05-oauth-flow.md) | Implementing remote server authentication |
+| [FastMCP API](./reference/06-fastmcp-api.md) | Building Python MCP servers |
+| [Python SDK API](./reference/07-python-sdk-api.md) | Using the raw MCP Python SDK |
+| [TypeScript SDK API](./reference/08-typescript-sdk-api.md) | Building Node.js MCP servers or clients |
+| [Security Checklist](./reference/09-security-checklist.md) | Pre-launch security review |
+| [Deployment Checklist](./reference/10-deployment-checklist.md) | Taking a server to production |
+
+---
+
 ## How to Use This Handbook
 
 1. **Complete Volume 1 first** — this volume builds directly on agents, tools, and RAG
@@ -163,6 +182,7 @@ Every chapter includes all of the following:
 3. **Run every code example** — reading code is not learning code
 4. **Complete the exercises** before moving to the next chapter
 5. **Build the mini project** — this converts reading into doing
+6. **Use the Fast Read box** — every chapter opens with a 5-minute skim for days when you're in a hurry or revisiting material
 6. **Build the production project** at the end of each module
 
 ---
