@@ -66,7 +66,7 @@ Topics not covered in Volume 2 that may appear in later volumes:
 
 | Volume | Title | Repository | Status |
 |--------|-------|-----------|--------|
-| 1 | AI Engineering | https://github.com/Bschouha19/AI-Engineering | ✅ Complete |
+| 1 | AI Engineering | https://github.com/Bschouha19/AI-Engineering-Handbook | ✅ Complete |
 | 2 | MCP Engineering | https://github.com/Bschouha19/MCP-Engineering | 🔄 In Progress |
 | 3 | AI Agent Engineering | — | 🔜 Planned |
 | 4 | n8n AI Workflow Automation | — | 🔜 Planned |

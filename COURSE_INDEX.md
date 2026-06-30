@@ -3,7 +3,7 @@
 
 ---
 
-> **Prerequisites:** [Volume 1 — AI Engineering](https://github.com/Bschouha19/AI-Engineering) — all 20 chapters
+> **Prerequisites:** [Volume 1 — AI Engineering](https://github.com/Bschouha19/AI-Engineering-Handbook) — all 20 chapters
 >
 > **Assumed knowledge:** Python, Node.js, Anthropic SDK, AI agents (Vol 1 Ch 10–11), RAG (Vol 1 Ch 09), Docker
 
@@ -13,7 +13,7 @@
 
 ## Progress
 
-**0 of 15 chapters complete**
+**1 of 15 chapters complete**
 
 ---
 
@@ -24,7 +24,7 @@
 
 | # | Chapter | File | Status | Key Skills |
 |---|---------|------|--------|-----------|
-| 01 | What Is MCP and Why It Exists | chapters/chapter-01-what-is-mcp.md | 🔜 Next | N×M problem, JSON-RPC 2.0, three-actor model, ecosystem map |
+| 01 | [What Is MCP and Why It Exists](chapters/chapter-01-what-is-mcp.md) | chapters/chapter-01-what-is-mcp.md | ✅ Complete | N×M problem, JSON-RPC 2.0, three-actor model, ecosystem map |
 | 02 | MCP Protocol Architecture — How It Actually Works | chapters/chapter-02-protocol-architecture.md | 🔜 | Capability negotiation, message lifecycle, error codes, spec versions |
 | 03 | Your First MCP Server | chapters/chapter-03-first-server.md | 🔜 | FastMCP, raw SDK, wiring to Claude Code + Cursor + Claude Desktop |
 

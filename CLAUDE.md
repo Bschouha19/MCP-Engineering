@@ -297,7 +297,7 @@ This is Volume 2. Always link back to Volume 1 chapters when relevant:
 | Cost | Vol 1 Ch 19 — cost engineering |
 | Capstone DevAssist | Vol 1 Ch 20 — SupportAI capstone |
 
-Volume 1 repository: https://github.com/Bschouha19/AI-Engineering
+Volume 1 repository: https://github.com/Bschouha19/AI-Engineering-Handbook
 
 ---
 
@@ -305,8 +305,8 @@ Volume 1 repository: https://github.com/Bschouha19/AI-Engineering
 
 | # | Chapter | File | Status |
 |---|---------|------|--------|
-| 01 | What Is MCP and Why It Exists | chapters/chapter-01-what-is-mcp.md | 🔜 Next |
-| 02 | MCP Protocol Architecture — How It Actually Works | chapters/chapter-02-protocol-architecture.md | 🔜 |
+| 01 | What Is MCP and Why It Exists | chapters/chapter-01-what-is-mcp.md | ✅ Complete |
+| 02 | MCP Protocol Architecture — How It Actually Works | chapters/chapter-02-protocol-architecture.md | 🔜 Next |
 | 03 | Your First MCP Server | chapters/chapter-03-first-server.md | 🔜 |
 | 04 | MCP Tools — The Primary Primitive | chapters/chapter-04-tools.md | 🔜 |
 | 05 | MCP Resources and Prompts | chapters/chapter-05-resources-prompts.md | 🔜 |

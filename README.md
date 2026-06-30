@@ -10,7 +10,7 @@ A complete, practical MCP Engineering course for software developers who have co
 
 This is Volume 2 of the AI Engineering Handbook series. Before starting this volume, complete:
 
-**[Volume 1 — AI Engineering](https://github.com/Bschouha19/AI-Engineering)**
+**[Volume 1 — AI Engineering](https://github.com/Bschouha19/AI-Engineering-Handbook)**
 
 Volume 1 covers: LLMs, AI APIs, Prompt Engineering, Structured Outputs, Embeddings, Vector Databases, RAG, AI Agents, Multi-Agent Systems, Local AI, Fine-Tuning, Multi-Modal AI, Production Architecture, Testing, Observability, Security, Cost Engineering, and a complete Capstone project.
 
@@ -51,11 +51,11 @@ This handbook teaches you to build on both sides of that protocol — the server
 
 ## Progress
 
-**0 of 15 chapters complete** — Volume 2 in progress.
+**1 of 15 chapters complete** — Volume 2 in progress.
 
 | Module | Chapters | Status |
 |--------|----------|--------|
-| 1 — Foundations | Ch 01–03 | 🔜 Next |
+| 1 — Foundations | Ch 01–03 | 🔄 In Progress |
 | 2 — The Three Primitives | Ch 04–06 | 🔜 |
 | 3 — Transport and Connectivity | Ch 07–08 | 🔜 |
 | 4 — Real-World Servers | Ch 09–11 | 🔜 |
@@ -70,7 +70,7 @@ This handbook teaches you to build on both sides of that protocol — the server
 
 | # | Chapter | Status |
 |---|---------|--------|
-| 01 | What Is MCP and Why It Exists | 🔜 Next |
+| 01 | [What Is MCP and Why It Exists](./chapters/chapter-01-what-is-mcp.md) | ✅ Complete |
 | 02 | MCP Protocol Architecture — How It Actually Works | 🔜 |
 | 03 | Your First MCP Server | 🔜 |
 
@@ -196,7 +196,7 @@ Every reference document is open-in-second-tab material — built for lookup, no
 - Claude Desktop (for testing MCP servers)
 - Anthropic API key
 
-All installation instructions are covered in [Volume 1, Chapter 3](https://github.com/Bschouha19/AI-Engineering/blob/main/chapters/chapter-03-dev-environment.md).
+All installation instructions are covered in [Volume 1, Chapter 3](https://github.com/Bschouha19/AI-Engineering-Handbook/blob/main/chapters/chapter-03-dev-environment.md).
 
 ---
 
@@ -204,7 +204,7 @@ All installation instructions are covered in [Volume 1, Chapter 3](https://githu
 
 | Volume | Title | Status | Repository |
 |--------|-------|--------|-----------|
-| 1 | AI Engineering — From Zero to Production | ✅ Complete (20 chapters) | [AI-Engineering](https://github.com/Bschouha19/AI-Engineering) |
+| 1 | AI Engineering — From Zero to Production | ✅ Complete (20 chapters) | [AI-Engineering](https://github.com/Bschouha19/AI-Engineering-Handbook) |
 | 2 | MCP Engineering | 🔄 In Progress | [MCP-Engineering](https://github.com/Bschouha19/MCP-Engineering) |
 | 3 | AI Agent Engineering | 🔜 Planned | — |
 | 4 | n8n AI Workflow Automation | 🔜 Planned | — |
