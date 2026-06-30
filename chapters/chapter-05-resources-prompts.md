@@ -870,7 +870,7 @@ A prompt can embed live resource content directly in its messages. The AI reads 
 ```python
 from fastmcp import FastMCP
 from fastmcp.prompts import Message
-from mcp.types import EmbeddedResource, TextResourceContents
+from mcp.types import EmbeddedResource, PromptMessage, TextResourceContents
 
 mcp = FastMCP(name="docs-server")
 
@@ -878,7 +878,7 @@ DOCS: dict[str, str] = {"setup": "# Setup\n1. Install Python 3.11+\n2. uv add fa
 
 
 @mcp.prompt
-def explain_with_docs(topic: str) -> list[Message]:
+def explain_with_docs(topic: str) -> list:
     """Explain a topic using the actual documentation as context.
     
     Unlike explain_topic (which asks Claude to explain from training),
@@ -901,24 +901,27 @@ def explain_with_docs(topic: str) -> list[Message]:
             "I'll quote relevant sections directly.",
             role="assistant"
         ),
-        Message(
-            content=[
-                # Inline text asking the question
-                {"type": "text", "text": f"Please explain '{topic}' using this documentation:"},
-                # Embedded resource — live content from the server
-                EmbeddedResource(
-                    type="resource",
-                    resource=TextResourceContents(
-                        uri=f"docs://{topic}",
-                        mimeType="text/markdown",
-                        text=doc_content,
-                    )
-                ),
-                {"type": "text", "text": "Explain clearly for a beginner. Include one practical example."},
-            ]
+        # MCP PromptMessage.content is a SINGLE item (TextContent | ImageContent | EmbeddedResource).
+        # You CANNOT combine text and an EmbeddedResource in one message — they must be separate.
+        Message(f"Please explain '{topic}' using the documentation below:"),
+        # EmbeddedResource gets its own PromptMessage — one content item per message.
+        PromptMessage(
+            role="user",
+            content=EmbeddedResource(
+                type="resource",
+                resource=TextResourceContents(
+                    uri=f"docs://{topic}",
+                    mimeType="text/markdown",
+                    text=doc_content,
+                )
+            )
         ),
+        Message("Explain clearly for a beginner. Include one practical example."),
     ]
 ```
+
+> **Critical MCP constraint — one content item per message:**
+> `PromptMessage.content` is a single union type: `TextContent | ImageContent | AudioContent | EmbeddedResource`. You cannot put multiple content items in one message. If you need text followed by an embedded resource, use two separate messages: a `Message(text)` then a `PromptMessage(role="user", content=EmbeddedResource(...))`. FastMCP's `Message(list)` does not produce multiple content items — it JSON-serialises the list into a text string.
 
 **Embedded vs linked resources:**
 - **Embedded** (`EmbeddedResource` in prompt) — content is included directly; AI reads it inline; no additional `resources/read` call needed
@@ -943,7 +946,7 @@ mcp = FastMCP(name="docs-server")
     uri="docs://{topic}/full",
     name="Full Topic Documentation",
     description="All documentation for a topic: Markdown content plus JSON metadata.",
-    mime_type="multipart/mixed",
+    mime_type="text/markdown",
 )
 def get_full_topic(topic: str) -> ResourceResult:
     """Return complete documentation — both the readable Markdown and the metadata JSON.
@@ -1056,19 +1059,23 @@ def get_current_metrics() -> str:
 # ── How to trigger a subscription notification ───────────────────────────────
 # FastMCP does not (as of 3.x) automatically emit notifications/resources/updated
 # when a resource function's return value changes — it cannot detect that.
+# FastMCP only sends notifications/resources/list_changed automatically (when
+# resources are added or removed via enable/disable).
 #
-# You must trigger notifications manually when data changes:
+# To send notifications/resources/updated manually, use the underlying MCP
+# Python SDK. FastMCP is adding native support — always check
+# gofastmcp.com/servers/resources for the current API before implementing.
 #
-# from fastmcp.server.notifications import notify_resource_updated
+# Conceptual pattern (notification dispatch is implementation-specific):
 #
 # async def _update_metrics():
 #     while True:
 #         _metrics.update({...})
-#         await notify_resource_updated(mcp, "metrics://current")  # 🔑 trigger notification
+#         await _send_resource_updated("metrics://current")  # trigger notification
 #         await asyncio.sleep(1.0)
 #
-# This sends notifications/resources/updated to all subscribed clients.
-# They will then call resources/read to get the new content.
+# Protocol flow: data changes → server sends notifications/resources/updated
+# → subscribed clients call resources/read → client gets fresh content.
 #
 # ⚠️ Debounce high-frequency updates — see Production Issue below.
 ```
@@ -1523,12 +1530,18 @@ Sending a notification every millisecond when a metric updates will flood the cl
 ```python
 _last_notification: float = 0.0
 
-async def _maybe_notify(mcp_instance, uri: str) -> None:
+async def _maybe_notify(send_notification, uri: str) -> None:
+    """Debounce wrapper — calls send_notification at most once per second.
+    
+    Pass your framework's notification function as send_notification.
+    In FastMCP 3.x, triggering notifications/resources/updated requires
+    the underlying MCP Python SDK — check gofastmcp.com for the current API.
+    """
     global _last_notification
     now = time.monotonic()
     if now - _last_notification > 1.0:  # At most once per second
         _last_notification = now
-        await notify_resource_updated(mcp_instance, uri)
+        await send_notification(uri)
 ```
 
 **5. Use docstring `Args` sections for prompt argument descriptions.**
@@ -1826,7 +1839,7 @@ def search_database(query: str, limit: int = 10) -> str:
 async def update_loop():
     while True:
         fetch_new_data()
-        await notify_resource_updated(mcp, "data://stats")  # Always fires
+        await _send_resource_updated("data://stats")  # always fires — wasteful
         await asyncio.sleep(1.0)
 
 # Correct: compare data before notifying
@@ -1834,9 +1847,9 @@ async def update_loop():
     previous = None
     while True:
         new_data = fetch_new_data()
-        if new_data != previous:          # Only notify on actual change
+        if new_data != previous:          # only notify on actual change
             previous = new_data
-            await notify_resource_updated(mcp, "data://stats")
+            await _send_resource_updated("data://stats")
         await asyncio.sleep(1.0)
 ```
 
@@ -2036,14 +2049,15 @@ import time
 _count = 0
 _window_start = time.monotonic()
 
-async def _notify_with_rate_log(uri: str):
+async def _notify_with_rate_log(send_notification, uri: str):
+    """Rate-logging wrapper around your notification dispatch function."""
     global _count, _window_start
     _count += 1
     if time.monotonic() - _window_start > 1.0:
         print(f"[DIAG] Notification rate: {_count}/s for {uri}", file=sys.stderr)
         _count = 0
         _window_start = time.monotonic()
-    await notify_resource_updated(mcp, uri)
+    await send_notification(uri)  # replace with your notification dispatch
 ```
 
 ### How to Fix It
@@ -2052,7 +2066,7 @@ async def _notify_with_rate_log(uri: str):
 # Before: notification on every metric event
 async def on_metric_event(metric: dict) -> None:
     _metrics.update(metric)
-    await notify_resource_updated(mcp, "metrics://current")  # 200/s
+    await _send_resource_updated("metrics://current")  # called 200/s — floods client
 
 # After: debounced — at most 1 notification per second
 import asyncio
@@ -2060,15 +2074,17 @@ _debounce_task: asyncio.Task | None = None
 
 async def on_metric_event(metric: dict) -> None:
     global _debounce_task
-    _metrics.update(metric)
+    _metrics.update(metric)  # always update the data immediately
 
     if _debounce_task is None or _debounce_task.done():
         _debounce_task = asyncio.create_task(_debounced_notify())
 
 async def _debounced_notify() -> None:
-    await asyncio.sleep(1.0)  # Wait 1 second, then notify once
-    await notify_resource_updated(mcp, "metrics://current")
+    await asyncio.sleep(1.0)  # wait 1 second, then notify once
+    await _send_resource_updated("metrics://current")  # one notification per debounce window
 ```
+
+> **Note:** `_send_resource_updated` is a placeholder for your notification dispatch function. In FastMCP 3.x, sending `notifications/resources/updated` manually requires the underlying MCP Python SDK. Always check [gofastmcp.com/servers/resources](https://gofastmcp.com/servers/resources) for the current FastMCP API before implementing.
 
 ### How to Prevent It in Future
 
