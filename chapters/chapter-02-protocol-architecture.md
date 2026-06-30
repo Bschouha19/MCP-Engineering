@@ -609,7 +609,7 @@ MCP Inspector is the official debugging tool that shows you protocol messages in
 npx @modelcontextprotocol/inspector python server.py
 ```
 
-Open the URL it prints (usually `http://localhost:5173`). You will see:
+Open the URL it prints (usually `http://localhost:6274`). You will see:
 
 1. **The initialization handshake** — the very first thing that happens
 2. **Tools tab** — lists all tools with their schemas
